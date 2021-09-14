@@ -4,7 +4,6 @@
 #include <vector>
 #include <map>
 #include <iostream>
-#include <sys/socket.h>
 
 #include "player.h"
 #include "server.h"
@@ -14,8 +13,13 @@ class Game
 private:
 Server server;
 
+sockaddr_in ipToSendTo;
+
 std::vector<Player> players; // The magic
 //std::map<Player, Team> teamPlayers; // A concept for team inclusion
+
+int currentLobby;
+int maxPlayers = 5;
 
 public:
 bool Init();

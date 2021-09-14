@@ -35,30 +35,27 @@ bool Server::open(const char* hostname, uint16_t port, int protocol, int sockTyp
     return true;
 }
 
-char* Server::recieve()
+// Mistake number one in this case. I didn't fill the IP in for SendTO from here. This is not supposed to be the initator. This is the reciever.
+// The client is the one whom initiates!
+
+int Server::recieve(sockaddr_in& sockIn, PlayerData* buff)
 {
-        int i = 0;
-        int buffSize = 512, buffRecieved = 0;
-        char* buff = new char[512];
-        while (buffRecieved < buffSize)
-        {
-            // not equal to catch neg error!!!
-            i = recvfrom(sock, buff + buffRecieved, buffSize, 0, (sockaddr*)&sockIn, (socklen_t *)sizeof(sockIn)); 
+    int i, buffSize = 512;
 
-            if (i < 0)
-            {
-                std::cerr << "Recieve Err: " << gai_strerror(i) << std::endl;
-                return nullptr;
-            }
-            if (buffSize < i)
-            {
-                buffSize = i;
-                buff = new char[buffSize];
-            }
-            // To count how many bits are left to recieve
-            buffRecieved += i;
-            buffSize -= i;
-        }
+    socklen_t size = sizeof(sockIn);
 
-        return buff;
+    // This is definitely working. It only errs out on call from client.
+    i = recvfrom(sock, buff, buffSize, 0, (struct sockaddr*)&sockIn, &size); 
+
+    if (i < 0)
+    {
+        std::cerr << "Recieve Err: " << gai_strerror(i) << std::endl;
+        return i;
+    }
+    if (buffSize < i)
+    {
+        buffSize = i;
+    }
+
+    return i;
 }

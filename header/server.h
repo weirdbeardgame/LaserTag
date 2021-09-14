@@ -16,7 +16,7 @@ class Server
 {
     private:
     int sock;
-    sockaddr_in sockIn, sockOut;
+    sockaddr_in sockOut;
     hostent *host;
     addrinfo info, *infoP;
     timeval tv;
@@ -24,15 +24,19 @@ class Server
 
     public:
     bool open(const char* hostName, uint16_t port, int protocol, int sockType);
-    char* recieve();
+    int recieve(sockaddr_in& sockIn, PlayerData* buff);
     template<typename T>
-    int sendBytes(T val, int siz)
+    int sendBytes(T val, int siz, const char* ip, uint16_t port)
     {
         if (sock <= 0)
         {
             std::cerr << "Connection terminated" << std::endl;
             return -1;
         }
+
+        sockOut.sin_family = AF_INET;
+        sockOut.sin_addr.s_addr = inet_addr(ip);
+        sockOut.sin_port = port;
 
         char* buffer = (char*)&val;
 
