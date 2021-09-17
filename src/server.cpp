@@ -35,9 +35,6 @@ bool Server::open(const char* hostname, uint16_t port, int protocol, int sockTyp
     return true;
 }
 
-// Mistake number one in this case. I didn't fill the IP in for SendTO from here. This is not supposed to be the initator. This is the reciever.
-// The client is the one whom initiates!
-
 int Server::recieve(sockaddr_in& sockIn, PlayerData* buff)
 {
     int i, buffSize = 512;
