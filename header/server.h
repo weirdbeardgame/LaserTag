@@ -25,7 +25,8 @@ class Server
     public:
     bool open(const char* hostName, uint16_t port, int protocol, int sockType);
     int recieve(sockaddr_in& sockIn, PlayerData* buff);
-    inline int sendBytes(PlayerData val, int siz, const char* ip, uint16_t port)
+    template <typename T>
+    inline int sendBytes(T* val, int siz, const char* ip, uint16_t port)
     {
         if (sock <= 0)
         {
@@ -37,7 +38,8 @@ class Server
         sockOut.sin_addr.s_addr = inet_addr(ip);
         sockOut.sin_port = port;
 
-        int size = sendto(sock, &val, siz, 0, (const sockaddr *)&sockOut, (socklen_t)sizeof(sockOut));
+        // Is the pointer the issue?
+        int size = sendto(sock, val, siz, 0, (const sockaddr *)&sockOut, (socklen_t)sizeof(sockOut));
         if (size < 0)
         {
             //std::cerr << "Send Err: " << strerror(errno) << std::endl;

@@ -2,7 +2,7 @@
 
 bool Game::Init()
 {
-    PlayerData temp;
+    PlayerData* temp = new PlayerData();
     // Establish server and game rules in here. Add players...
     if (!server.open("192.168.1.1", 1025, IPPROTO_UDP, SOCK_DGRAM ))
     {
@@ -10,13 +10,17 @@ bool Game::Init()
         return false;
     }
 
-    while(currentLobby < maxPlayers)
+    while(currentLobby < 1)
     {
         // Using this to listen for hello packets.
         // Always remeber. Hello packets are just player data not initallized that do contain an ID for the server to respond to.
-        server.recieve(ipToSendTo, &temp);
+        if (server.recieve(ipToSendTo, temp) < 0)
+        {
+            std::cerr << "Recieve err" << std::endl;
+        }
+
         std::cout << "Recieve Loop" << std::endl;
-        if (&temp != nullptr)
+        if (temp != nullptr)
         {
             Fill(temp);
         }
@@ -24,17 +28,25 @@ bool Game::Init()
     return true;
 }
 
-void Game::Fill(PlayerData toFill)
+void Game::Fill(PlayerData* toFill)
 {
         int team = 0;
-        std::cout << "Fill in name for player " << toFill.id << " : ";
-        std::cin >> toFill.name;
+        std::cout << "Fill in name for player " << toFill->id << " : ";
+        std::cin >> toFill->name;
 
         std::cout << "What Team: ";
         std::cin >> team;
-        toFill.team = (Team)team;
+        toFill->team = (Team)team;
+
+        // ISSUE: This is only happening once. UDP packets can and will drop
+        // We need a is recieved response from Server and from Client alike
+        if (server.sendBytes(toFill, sizeof(toFill), "192.168.1.35", 1025) < 0)
+        {
+            std::cerr << "Send Error" << std::endl;
+        }
+
+
         players.push_back(toFill);
-        server.sendBytes(toFill, sizeof(toFill), "192.168.1.1", 1025);
         currentLobby += 1;
 }
 
