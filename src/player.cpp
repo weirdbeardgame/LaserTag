@@ -1,11 +1,16 @@
 #include "player.h"
 
-bool Player::Init(PlayerData d)
+bool Player::Init()
 {
-    data = d;
+    
 }
 
 void Player::Update()
 {
     
+}
+
+void Player::Kill()
+{
+
 }

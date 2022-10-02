@@ -38,19 +38,16 @@ struct PlayerData
 class Player
 {
 private:
-
-PlayerData data;
 sockaddr_in ipToSendTo;
 
 // The potential variable for registering hit or shooter based on frequency of infared
 // int ledFrequency = 0;
 
 public:
-// Thing about this is. This should be handled by client? 
-// Client sends hello packet out to server. Server adds client to struct like vector 
-bool Init(PlayerData data);
-// To check state
+bool Init();
 void Update();
+
+void Kill();
 };
 
 #endif

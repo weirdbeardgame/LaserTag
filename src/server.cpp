@@ -35,7 +35,8 @@ bool Server::open(const char* hostname, uint16_t port, int protocol, int sockTyp
     return true;
 }
 
-int Server::recieve(sockaddr_in& sockIn, PlayerData* buff)
+template <typename T>
+int Server::recieve(sockaddr_in& sockIn, T* buff)
 {
     int i, buffSize = 512;
 

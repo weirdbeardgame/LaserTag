@@ -25,6 +25,7 @@ bool Game::Init()
             Fill(temp);
         }
     }
+    delete(temp);
     return true;
 }
 
@@ -40,7 +41,7 @@ void Game::Fill(PlayerData* toFill)
 
         // ISSUE: This is only happening once. UDP packets can and will drop
         // We need a is recieved response from Server and from Client alike
-        if (server.sendBytes(toFill, sizeof(toFill), "192.168.1.35", 1025) < 0)
+        if (server.sendBytes(toFill, "192.168.1.35", 1025) < 0)
         {
             std::cerr << "Send Error" << std::endl;
         }
